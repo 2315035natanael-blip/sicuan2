@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="result-wrapper">
+
+  <!-- ================= HEADER ================= -->
+  <div class="result-header">
+    <h1>Hasil Rekomendasi Investasi</h1>
+  </div>
+
+  <!-- ================= RINGKASAN + KEBUTUHAN ================= -->
+  <div class="card result-card">
+
+    <h3>Ringkasan Kondisi Anda</h3>
+    <p><b>Tujuan:</b> {{ r.tujuan }}</p>
+    <p><b>Dana Saat Ini:</b> Rp {{ r.dana }}</p>
+    <p><b>Target Dana:</b> Rp {{ r.target }}</p>
+    <p><b>Profil Risiko:</b> {{ r.profil }}</p>
+
+    <hr>
+
+    <h3>Kebutuhan Dana</h3>
+    <p>
+      Untuk mencapai target dalam <b>{{ r.bulan }}</b> bulan, Anda perlu menyiapkan dana sekitar:
+    </p>
+
+    <div class="highlight-value">
+      Rp {{ r.kebutuhan_per_bulan }} / bulan
+    </div>
+
+    <p class="small-text">
+      Estimasi return per bulan: {{ r.return_bulanan }}% <br>
+      Asumsi inflasi: {{ r.inflasi }}% / bulan
+    </p>
+
+    {% if r.realistis %}
+      <p class="status success">Target masih tergolong realistis dengan profil risiko Anda.</p>
+    {% else %}
+      <p class="status danger">Target tergolong tidak realistis dengan kondisi saat ini.</p>
+    {% endif %}
+
+  </div>
+
+  <!-- ================= ALOKASI DANA ================= -->
+  <div class="card result-card">
+
+    <h3>Alokasi Dana Investasi (Dana Saat Ini)</h3>
+
+    <table class="admin-table">
+      <tr>
+        <th>Aset</th>
+        <th>Persentase</th>
+        <th>Dana</th>
+      </tr>
+      {% for a in r.alokasi %}
+      <tr>
+        <td>{{ a[0] }}</td>
+        <td>{{ a[1] }}%</td>
+        <td>Rp {{ a[2] }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+
+  </div>
+
+  <!-- ================= KONDISI PASAR ================= -->
+  <div class="card result-card">
+
+    <h3>Kondisi Pasar Saat Ini</h3>
+<table class="admin-table">
+  <tr>
+    <th>Saham</th>
+    <th>Tren</th>
+    <th>Keyakinan</th>
+  </tr>
+
+  {% for m in r.market %}
+  <tr>
+    <td><b>{{ m[0] }}</b></td>
+
+    <td>
+      {% if "Naik" in m[1] or "Up" in m[1] %}
+        <span class="trend up">📈 {{ m[1] }}</span>
+      {% elif "Turun" in m[1] or "Down" in m[1] %}
+        <span class="trend down">📉 {{ m[1] }}</span>
+      {% else %}
+        <span class="trend flat">➖ {{ m[1] }}</span>
+      {% endif %}
+    </td>
+
+    <td>
+      {% if m[2] == "Tinggi" %}
+        <span class="confidence high">Tinggi</span>
+      {% elif m[2] == "Sedang" %}
+        <span class="confidence medium">Sedang</span>
+      {% else %}
+        <span class="confidence low">Rendah</span>
+      {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+
+<p class="disclaimer">
+  *Rekomendasi ini bersifat informasional dan bukan jaminan hasil investasi.
+</p>
+
+  </div>
+
+  <!-- ================= ACTION ================= -->
+  <div class="result-action">
+    <a href="/">
+      <button class="primary-btn">Ulangi Simulasi</button>
+    </a>
+  </div>
+
+</div>
+
+{% endblock %}
